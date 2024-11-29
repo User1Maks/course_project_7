@@ -1,4 +1,4 @@
-from datetime import timedelta
+from datetime import time
 
 from django.db import models
 
@@ -22,7 +22,7 @@ class Habit(models.Model):
         help_text="Укажите место привычки",
         **NULLABLE,
     )
-    time = models.TimeField(
+    time_habit = models.TimeField(
         verbose_name="Время для привычки",
         help_text="Укажите время, когда необходимо выполнять привычку",
     )
@@ -31,8 +31,8 @@ class Habit(models.Model):
         verbose_name="Действие для привычки",
         help_text="Укажите действие для привычки",
     )
-    start_day = models.DateTimeField(
-        verbose_name="День начала выполнения привычки")
+    start_day = models.DateField(
+        verbose_name="День и время начала выполнения привычки")
     next_day = models.DateTimeField(
         verbose_name="День следующей выполнения привычки", blank=True
     )
@@ -68,7 +68,7 @@ class Habit(models.Model):
     time_to_complete = models.TimeField(
         verbose_name="Время на выполнение привычки",
         help_text="Укажите время на выполнение привычки (не более 2 мин)",
-        default=timedelta(minutes=2),
+        default=time(0, 2),
         blank=True,
     )
     is_public = models.BooleanField(
@@ -80,9 +80,9 @@ class Habit(models.Model):
 
     def __str__(self):
         if self.place:
-            return f"Я буду {self.action} в {self.time} в {self.place}."
+            return f"Я буду {self.action} в {self.time_habit} в {self.place}."
         else:
-            return f"Я буду {self.action} в {self.time}."
+            return f"Я буду {self.action} в {self.time_habit}."
 
     class Meta:
         verbose_name = "Привычка"
