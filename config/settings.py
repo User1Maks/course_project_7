@@ -27,6 +27,8 @@ INSTALLED_APPS = [
     "django_filters",
     "phonenumber_field",
     "django_celery_beat",
+    "drf_yasg",
+    "corsheaders",
 
     "users",
     "habits",
@@ -35,11 +37,13 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+
 ]
 
 ROOT_URLCONF = "config.urls"
@@ -151,3 +155,12 @@ DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 TELEGRAM_URL = os.getenv('TELEGRAM_URL')
 TELEGRAM_TOKEN = os.getenv('TELEGRAM_TOKEN')
 
+
+CORS_ALLOWED_ORIGINS = [
+    "https://read-only.example.com",
+    "https://read-and-write.example.com",
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://read-and-write.example.com",
+]

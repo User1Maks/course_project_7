@@ -20,6 +20,8 @@ eventlet = "^0.38.0"
 django-celery-beat = "^2.7.0"
 gevent = "^24.11.1"
 requests = "^2.32.3"
+drf-yasg = "^1.21.8"
+django-cors-headers = "^4.6.0"
 
 
 [tool.poetry.group.dev.dependencies]

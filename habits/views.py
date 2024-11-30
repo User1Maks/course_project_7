@@ -61,7 +61,7 @@ class HabitListAPIView(generics.ListAPIView):
 class PublicHabitListAPIView(generics.ListAPIView):
     """ Public habit list endpoint """
     serializer_class = HabitSerializers
-    permission_classes = [IsOwner, IsPublic]
+    permission_classes = [IsOwner | IsPublic]
 
     def get_queryset(self):
         """ Возвращает все публичные привычки """

@@ -1,13 +1,17 @@
 from rest_framework.permissions import BasePermission
 
+from habits.models import Habit
+
 
 class IsOwner(BasePermission):
     """Проверяет, является ли пользователь владельцем."""
 
     def has_permission(self, request, view):
         """Проверяем пользователя на принадлежность к владельцу объекта"""
-
-        return request.user == view.get_object().owner
+        if request.user and view.kwargs.get('pk'):
+            habit = Habit.objects.get(id=view.kwargs.get('pk'))
+            return request.user == habit.owner
+        return False
 
 
 class IsPublic(BasePermission):

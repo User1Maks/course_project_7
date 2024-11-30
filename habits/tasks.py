@@ -2,6 +2,9 @@ from celery import shared_task
 from config import settings
 import requests
 from habits.models import Habit
+from requests.exceptions import RequestException
+from rest_framework.response import Response
+from rest_framework import status
 
 
 @shared_task
@@ -21,8 +24,17 @@ def send_a_habit_reminder(habit_id, chat_id):
         'chat_id': chat_id,
     }
 
-    requests.get(f'{settings.TELEGRAM_URL}'
-                 f'{settings.TELEGRAM_TOKEN}/sendMessage', params=params)
+    try:
+        response = requests.get(f'{settings.TELEGRAM_URL}'
+                                f'{settings.TELEGRAM_TOKEN}/sendMessage',
+                                params=params)
+        response.raise_for_status()  # Проверка на ошибки HTTP
+        data = response.json()
+        print(Response(data))  # обработка полученных данных
+    except RequestException as e:
+        # обработка исключения
+        print(Response({'error': str(e)},
+                       status=status.HTTP_500_INTERNAL_SERVER_ERROR))
 
     # apply_async - для асинхронного выполнения задачи с отложенным временем
     send_a_habit_reminder.apply_async((habit_id, chat_id), eta=habit.next_day)
