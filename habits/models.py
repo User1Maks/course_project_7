@@ -22,16 +22,13 @@ class Habit(models.Model):
         help_text="Укажите место привычки",
         **NULLABLE,
     )
-    time_habit = models.TimeField(
-        verbose_name="Время для привычки",
-        help_text="Укажите время, когда необходимо выполнять привычку",
-    )
+
     action = models.CharField(
         max_length=255,
         verbose_name="Действие для привычки",
         help_text="Укажите действие для привычки",
     )
-    start_day = models.DateField(
+    start_day = models.DateTimeField(
         verbose_name="День и время начала выполнения привычки")
     next_day = models.DateTimeField(
         verbose_name="День следующей выполнения привычки", blank=True
@@ -80,9 +77,9 @@ class Habit(models.Model):
 
     def __str__(self):
         if self.place:
-            return f"Я буду {self.action} в {self.time_habit} в {self.place}."
+            return f"Я буду {self.action} в {self.place}."
         else:
-            return f"Я буду {self.action} в {self.time_habit}."
+            return f"Я буду {self.action}."
 
     class Meta:
         verbose_name = "Привычка"

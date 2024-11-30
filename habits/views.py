@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import timedelta
 
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import generics
@@ -8,6 +8,7 @@ from habits.models import Habit
 from habits.paginators import HabitPaginator
 from habits.permissions import IsOwner, IsPublic
 from habits.serializers import HabitSerializers
+from habits.tasks import send_a_habit_reminder
 
 
 class HabitCreateAPIView(generics.CreateAPIView):
@@ -20,21 +21,25 @@ class HabitCreateAPIView(generics.CreateAPIView):
         и день следующего выполнения привычки."""
 
         start_day = serializer.validated_data.get('start_day')
-        habit_time = serializer.validated_data.get('time_habit')
 
-        if not (start_day and habit_time):
+        if not start_day:
             raise ValidationError(
                 'Дата и время для привычки должны быть указаны.')
 
-        # Устанавливаем день и время выбранное пользователем
-        start_day_with_time = datetime.combine(start_day, habit_time)
         periodicity = serializer.validated_data.get('periodicity', 1)
         next_day = start_day + timedelta(days=periodicity)
 
         habit = serializer.save(owner=self.request.user,
-                                start_day=start_day_with_time,
+                                start_day=start_day,
                                 next_day=next_day)
-        habit.save()
+        chat_id = self.request.user.tg_chat_id
+
+        if chat_id:
+            habit_id = habit.id
+            send_a_habit_reminder.delay(habit_id, chat_id)
+        else:
+            habit.is_active = False
+            habit.save()
 
 
 class HabitListAPIView(generics.ListAPIView):

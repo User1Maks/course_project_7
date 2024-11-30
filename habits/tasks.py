@@ -1,29 +1,28 @@
 from celery import shared_task
 from config import settings
-from django.core.mail import send_mail
-import datetime
-
+import requests
 from habits.models import Habit
 
 
 @shared_task
-def send_a_habit_reminder(habit_id):
-    """Отправляет напоминание о привычке. """
-    # Текущая дата и время
-    now = datetime.datetime.now()
-
+def send_a_habit_reminder(habit_id, chat_id):
+    """Функция для отправки напоминания о привычке."""
     habit = Habit.objects.get(id=habit_id)
-    name_habit = ''
 
-    if habit.is_pleasant:
-        name_habit = 'Приятная'
+    if habit.related_habit:
+        message = (f'Напоминаю Вам о необходимости {habit.action} и '
+                   f'{habit.related_habit.action}')
     else:
-        name_habit = 'Полезная'
+        message = (f'Напоминаю Вам о необходимости {habit.action} и '
+                   f'вознаградите себя {habit.reward}')
 
-    if now > habit.start_day and habit.time_habit:
+    params = {
+        'text': message,
+        'chat_id': chat_id,
+    }
 
-        send_mail(f'{name_habit} привычка.',
-                  f'Напоминаю Вам о вашей привычке',
-                  settings.EMAIL_HOST_USER,
-                  [habit.user]
-                  )
+    requests.get(f'{settings.TELEGRAM_URL}'
+                 f'{settings.TELEGRAM_TOKEN}/sendMessage', params=params)
+
+    # apply_async - для асинхронного выполнения задачи с отложенным временем
+    send_a_habit_reminder.apply_async((habit_id, chat_id), eta=habit.next_day)
