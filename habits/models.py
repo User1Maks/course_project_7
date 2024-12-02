@@ -1,4 +1,4 @@
-from datetime import time
+from datetime import timedelta
 
 from django.db import models
 
@@ -62,10 +62,11 @@ class Habit(models.Model):
         **NULLABLE,
     )
 
-    time_to_complete = models.TimeField(
+    time_to_complete = models.CharField(
+        max_length=50,
         verbose_name="Время на выполнение привычки",
         help_text="Укажите время на выполнение привычки (не более 2 мин)",
-        default=time(0, 2),
+        default=timedelta(minutes=2),
         blank=True,
     )
     is_public = models.BooleanField(

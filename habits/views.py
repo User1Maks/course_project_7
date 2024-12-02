@@ -37,9 +37,6 @@ class HabitCreateAPIView(generics.CreateAPIView):
         if chat_id:
             habit_id = habit.id
             send_a_habit_reminder.delay(habit_id, chat_id)
-        else:
-            habit.is_active = False
-            habit.save()
 
 
 class HabitListAPIView(generics.ListAPIView):
