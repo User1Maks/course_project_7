@@ -1,5 +1,4 @@
 import os
-import gevent
 from celery import Celery
 
 # Установить настройки по умолчанию из Django-проекта
