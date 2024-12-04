@@ -8,7 +8,7 @@ app = Celery('config')
 
 # Использование здесь строки означает, что рабочему процессу не нужно
 # сериализовать объект конфигурации дочерним процессам.
-# - namespace='CELERY' означает, что все ключи конфигурации, связанные с Celery,
+# namespace='CELERY' означает, что все ключи конфигурации, связанные с Celery,
 # должны иметь префикс `CELERY_`.
 app.config_from_object('django.conf:settings', namespace='CELERY')
 
