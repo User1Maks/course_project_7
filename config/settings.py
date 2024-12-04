@@ -12,7 +12,7 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 
 DEBUG = os.getenv("DEBUG", False) == "True"
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 INSTALLED_APPS = [
     "django.contrib.admin",
@@ -70,11 +70,11 @@ WSGI_APPLICATION = "config.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql_psycopg2",
-        "NAME": os.getenv("DATABASES_NAME"),
-        "USER": os.getenv("DATABASES_USER"),
-        "PASSWORD": os.getenv("DATABASES_PASSWORD"),
-        "HOST": os.getenv("DATABASES_HOST"),
-        "PORT": os.getenv("DATABASES_PORT"),
+        "NAME": os.getenv("POSTGRES_DB"),
+        "USER": os.getenv("POSTGRES_USER"),
+        "PASSWORD": os.getenv("POSTGRES_PASSWORD"),
+        "HOST": os.getenv("POSTGRES_HOST"),
+        "PORT": os.getenv("POSTGRES_PORT"),
     }
 }
 
@@ -144,13 +144,13 @@ EMAIL_USE_SSL = os.getenv("EMAIL_USE_SSL", False) == "True"
 SERVER_EMAIL = EMAIL_HOST_USER
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
-# # Периодическая задача
-# CELERY_BEAT_SCHEDULE = {
-#     "send_a_habit_reminder": {
-#         "task": "habits.tasks.send_a_habit_reminder",
-#         "schedule": timedelta(minutes=1),
-#     },
-# }
+# Периодическая задача
+CELERY_BEAT_SCHEDULE = {
+    "send_a_habit_reminder": {
+        "task": "habits.tasks.send_a_habit_reminder",
+        "schedule": timedelta(minutes=1),
+    },
+}
 
 TELEGRAM_URL = os.getenv('TELEGRAM_URL')
 TELEGRAM_TOKEN = os.getenv('TELEGRAM_TOKEN')
