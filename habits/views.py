@@ -26,17 +26,16 @@ class HabitCreateAPIView(generics.CreateAPIView):
             raise ValidationError(
                 'Дата и время для привычки должны быть указаны.')
 
-        periodicity = serializer.validated_data.get('periodicity', 1)
-        next_day = start_day + timedelta(days=periodicity)
+        next_day = start_day
 
         habit = serializer.save(owner=self.request.user,
-                                start_day=start_day,
                                 next_day=next_day)
-        chat_id = self.request.user.tg_chat_id
-
-        if chat_id:
-            habit_id = habit.id
-            send_a_habit_reminder.delay(habit_id, chat_id)
+        habit_id = habit.id
+        # Запланировать первую задачу для отправки напоминания
+        # Отправка напоминания будет выполнена асинхронно в будущем по
+        # расписанию
+        send_a_habit_reminder.apply_async(args=[habit_id],
+                                          eta=next_day)
 
 
 class HabitListAPIView(generics.ListAPIView):
@@ -79,6 +78,34 @@ class HabitUpdateAPIView(generics.UpdateAPIView):
     serializer_class = HabitSerializers
     queryset = Habit.objects.all()
     permission_classes = [IsOwner]
+
+    # def perform_update(self, serializer):
+    #     """Автоматически обновляет день следующего выполнения привычки
+    #             и пересылает напоминание, если необходимо."""
+    #
+    #     habit = self.get_object()
+    #
+    #     # Проверка наличия поля "start_day" в данных обновления
+    #     start_day = serializer.validated_data.get('start_day', habit.start_day)
+    #
+    #     if not start_day:
+    #         raise ValidationError(
+    #             'Дата и время для привычки должны быть указаны.')
+    #
+    #     # Если периодичность была обновлена, пересчитываем следующий день
+    #     periodicity = serializer.validated_data.get('periodicity',
+    #                                                 habit.periodicity)
+    #     next_day = start_day + timedelta(days=periodicity)
+    #
+    #     chat_id = self.request.user.tg_chat_id
+    #
+    #     # Сохраняем обновленные данные привычки
+    #     habit = serializer.save(next_day=next_day)
+    #
+    #     # Запланировать задачу для отправки напоминания
+    #     # Напоминание будет отправлено асинхронно в будущем
+    #     send_a_habit_reminder.apply_async(args=[habit.id, chat_id],
+    #                                       eta=habit.next_day)
 
 
 class HabitDestroyAPIView(generics.DestroyAPIView):
