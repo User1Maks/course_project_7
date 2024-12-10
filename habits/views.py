@@ -30,12 +30,12 @@ class HabitCreateAPIView(generics.CreateAPIView):
 
         habit = serializer.save(owner=self.request.user,
                                 next_day=next_day)
-        habit_id = habit.id
-        # Запланировать первую задачу для отправки напоминания
-        # Отправка напоминания будет выполнена асинхронно в будущем по
-        # расписанию
-        send_a_habit_reminder.apply_async(args=[habit_id],
-                                          eta=next_day)
+        # habit_id = habit.id
+        # # Запланировать первую задачу для отправки напоминания
+        # # Отправка напоминания будет выполнена асинхронно в будущем по
+        # # расписанию
+        # send_a_habit_reminder.apply_async(args=[habit_id],
+        #                                   eta=next_day)
 
 
 class HabitListAPIView(generics.ListAPIView):
