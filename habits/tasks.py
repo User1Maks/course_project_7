@@ -1,4 +1,5 @@
-from datetime import timedelta, datetime
+from datetime import timedelta
+from django.utils import timezone
 from celery import shared_task
 from config import settings
 import requests
@@ -10,14 +11,14 @@ from requests.exceptions import RequestException
 def send_a_habit_reminder():
     """Функция для отправки напоминания о привычке."""
 
-    current_datetime = datetime.now()
+    current_datetime = timezone.now()
 
     habits = Habit.objects.all()
 
     for habit in habits:
         if habit.next_day <= current_datetime:
             periodicity = habit.periodicity
-            habit.next_day = habit.start_day + timedelta(days=periodicity)
+            habit.next_day = habit.next_day + timedelta(days=periodicity)
             habit.save()
             chat_id = habit.owner.tg_chat_id
 
