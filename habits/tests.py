@@ -21,7 +21,7 @@ class HabitsTestCase(APITestCase):
             place='Локально',
             action='Test',
             start_day='2024-12-02T20:00:00+03:00',
-            next_day='2024-12-03T20:00:00+03:00',
+            next_day='2024-12-02T20:00:00+03:00',
             periodicity=1,
             reward='Вознаграждение',
             time_to_complete='02:00'
@@ -36,7 +36,7 @@ class HabitsTestCase(APITestCase):
             'place': 'Локально',
             'action': 'Test',
             'start_day': '2024-12-02T20:00:00+03:00',
-            'next_day': '2024-12-03T20:00:00+03:00',
+            'next_day': '2024-12-02T20:00:00+03:00',
             'reward': 'Вознаграждение 1',
             'time_to_complete': '02:00'
         }
@@ -53,7 +53,7 @@ class HabitsTestCase(APITestCase):
                 'related_habit': None,
                 'action': 'Test',
                 'start_day': '2024-12-02T20:00:00+03:00',
-                'next_day': '2024-12-03T20:00:00+03:00',
+                'next_day': '2024-12-02T20:00:00+03:00',
                 'owner': 1,
                 'is_pleasant': False,
                 'periodicity': 1,
@@ -70,7 +70,7 @@ class HabitsTestCase(APITestCase):
             'place': 'Локально',
             'action': 'Приятная привычка',
             'start_day': '2024-12-02T20:00:00+03:00',
-            'next_day': '2024-12-03T20:00:00+03:00',
+            'next_day': '2024-12-02T20:00:00+03:00',
             'is_pleasant': True,
             'periodicity': 1,
             'time_to_complete': '02:00',
@@ -90,7 +90,7 @@ class HabitsTestCase(APITestCase):
              'place': 'Локально',
              'action': 'Приятная привычка',
              'start_day': '2024-12-02T20:00:00+03:00',
-             'next_day': '2024-12-03T20:00:00+03:00',
+             'next_day': '2024-12-02T20:00:00+03:00',
              'is_pleasant': True,
              'reward': None,
              'is_public': True,
@@ -105,7 +105,7 @@ class HabitsTestCase(APITestCase):
             'place': 'Локально',
             'action': 'Test',
             'start_day': '2024-12-02T20:00:00+03:00',
-            'next_day': '2024-12-03T20:00:00+03:00',
+            'next_day': '2024-12-02T20:00:00+03:00',
             'related_habit': habit_3.id,
             'time_to_complete': '02:00'
         }
@@ -122,7 +122,7 @@ class HabitsTestCase(APITestCase):
              'place': 'Локально',
              'action': 'Test',
              'start_day': '2024-12-02T20:00:00+03:00',
-             'next_day': '2024-12-03T20:00:00+03:00',
+             'next_day': '2024-12-02T20:00:00+03:00',
              'is_pleasant': False,
              'reward': None,
              'is_public': False,

@@ -1,5 +1,3 @@
-from datetime import timedelta
-
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import generics
 from rest_framework.filters import OrderingFilter, SearchFilter
@@ -8,7 +6,6 @@ from habits.models import Habit
 from habits.paginators import HabitPaginator
 from habits.permissions import IsOwner, IsPublic
 from habits.serializers import HabitSerializers
-from habits.tasks import send_a_habit_reminder
 
 
 class HabitCreateAPIView(generics.CreateAPIView):
@@ -28,12 +25,11 @@ class HabitCreateAPIView(generics.CreateAPIView):
 
         next_day = start_day
 
-        habit = serializer.save(owner=self.request.user,
-                                next_day=next_day)
+        serializer.save(owner=self.request.user, next_day=next_day)
         # habit_id = habit.id
-        # # Запланировать первую задачу для отправки напоминания
-        # # Отправка напоминания будет выполнена асинхронно в будущем по
-        # # расписанию
+        # Запланировать первую задачу для отправки напоминания
+        # Отправка напоминания будет выполнена асинхронно в будущем по
+        # расписанию
         # send_a_habit_reminder.apply_async(args=[habit_id],
         #                                   eta=next_day)
 
