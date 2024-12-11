@@ -16,9 +16,16 @@ def send_a_habit_reminder():
     habits = Habit.objects.all()
 
     for habit in habits:
-        if habit.next_day <= current_datetime:
+
+        if habit.next_day.tzinfo is None:
+            habit_next_day_aware = timezone.make_aware(habit.next_day)
+        else:
+            habit_next_day_aware = habit.next_day
+
+        if (habit_next_day_aware.date() == current_datetime.date() and
+                habit_next_day_aware.time() <= current_datetime.time()):
             periodicity = habit.periodicity
-            habit.next_day = habit.next_day + timedelta(days=periodicity)
+            habit.next_day = habit_next_day_aware + timedelta(days=periodicity)
             habit.save()
             chat_id = habit.owner.tg_chat_id
 
